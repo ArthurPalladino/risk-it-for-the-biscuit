@@ -45,13 +45,10 @@ public class PowerUpScreen : MonoBehaviour
     }
     public void SetupCards()
     {
-        List<PowerUp> availablePowerUps = allPowerUps.OrderBy(x => Guid.NewGuid()).ToList();
         foreach (var card in cards)
         {
-            //ToDo: Utilizar o GetRandom e implementar probabilidade de drop por raridade.
-            PowerUp powerUp = availablePowerUps[0];
+            PowerUp powerUp = GetRandomPowerUp();
             powerUp.Setup();
-            availablePowerUps.RemoveAt(0);
             card.SetPowerUp(powerUp);
         }
     }
@@ -100,15 +97,32 @@ public class PowerUpScreen : MonoBehaviour
     {
         Vector3 offScreenPosition = transform.position + Vector3.down * 10f;
 
-        panelTransform.DOMove(offScreenPosition, 1);
+        panelTransform.DOMove(offScreenPosition, 1).OnComplete(() =>
+        {
+            gameObject.SetActive(false);
+        });
         AfterClose?.Invoke();
     }
 
     PowerUp GetRandomPowerUp(int curLevel = 1)
     {
-        // ToDo: Implementar lógica de raridade e nível
-        return allPowerUps[UnityEngine.Random.Range(0, allPowerUps.Count)];
-    }
+
+        List<PowerUp> availablePowerUps = allPowerUps.Where(p => !cards.Any(c => c.GetPowerUp() == p)).ToList();
+        float rand = UnityEngine.Random.value * 100f;
+        List<PowerUp> selectedList;
+        PowerupRarity choosedRarity;
+        if (rand <= (int)PowerupRarity.Legendary)
+            choosedRarity = PowerupRarity.Legendary;
+        else if (rand <= (int)PowerupRarity.Rare)
+            choosedRarity = PowerupRarity.Rare;
+        else if (rand <= (int)PowerupRarity.Epic)
+            choosedRarity = PowerupRarity.Epic;
+        else
+            choosedRarity = PowerupRarity.Common;
+
+        selectedList = availablePowerUps.Where(p => p.powerUpType == choosedRarity).ToList();
+        return selectedList[UnityEngine.Random.Range(0, selectedList.Count)];
+}
 
     void UpdateText()
     {
