@@ -18,7 +18,7 @@ public class PowerUpScreen : MonoBehaviour
 
     [SerializeField] Button refreshButton;
     TextMeshProUGUI refreshText;
-    int refreshTimes = 3;
+    int refreshTimes = 1111111;
 
     Action AfterClose;
     Vector3 originalPos;
@@ -26,7 +26,6 @@ public class PowerUpScreen : MonoBehaviour
     {
         refreshButton.onClick.AddListener(Refresh);
         refreshText = refreshButton.GetComponentInChildren<TextMeshProUGUI>();
-        originalPos = panelTransform.position;
         foreach (var card in cards)
         {
             card.onSelect += OnSelect;
@@ -36,13 +35,17 @@ public class PowerUpScreen : MonoBehaviour
     }
     void OnEnable()
     {
+        if (originalPos == Vector3.zero)
+        {
+            originalPos = panelTransform.position;
+        }
+        SetupCards();
         panelTransform.position = originalPos + Vector3.up * 10;
         panelTransform.DOMove(originalPos, 1);
     }
     public void SetupCards()
     {
         List<PowerUp> availablePowerUps = allPowerUps.OrderBy(x => Guid.NewGuid()).ToList();
-
         foreach (var card in cards)
         {
             //ToDo: Utilizar o GetRandom e implementar probabilidade de drop por raridade.
@@ -56,9 +59,9 @@ public class PowerUpScreen : MonoBehaviour
     void OnSelect(PowerUp powerUp)
     {
         SelectedPowerUp = powerUp;
+        SelectedPowerUpsManager.Instance.AddPowerUp(SelectedPowerUp);
         Close();
     }
-
 
     public void Refresh()
     {
@@ -95,7 +98,6 @@ public class PowerUpScreen : MonoBehaviour
 
     public void Close()
     {
-        Debug.Log("Closed PowerUp Screen");
         Vector3 offScreenPosition = transform.position + Vector3.down * 10f;
 
         panelTransform.DOMove(offScreenPosition, 1);
@@ -104,7 +106,7 @@ public class PowerUpScreen : MonoBehaviour
 
     PowerUp GetRandomPowerUp(int curLevel = 1)
     {
-
+        // ToDo: Implementar lógica de raridade e nível
         return allPowerUps[UnityEngine.Random.Range(0, allPowerUps.Count)];
     }
 

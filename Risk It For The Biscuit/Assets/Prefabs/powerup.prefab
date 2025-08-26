@@ -496,10 +496,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df59db332cb0bd4f847432123278604, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sprite: {fileID: 0}
-  background: {fileID: 0}
-  title: {fileID: 0}
-  description: {fileID: 0}
+  sprite: {fileID: 1629649421343279107}
+  background: {fileID: 8586345177588938851}
+  title: {fileID: 989421840330566152}
+  description: {fileID: 6236487559346483170}
+  cardBackSprite: {fileID: 3204503589588304623, guid: 243f5c463f16a7c409b4ea46b53b7f3f, type: 3}
 --- !u!114 &726031730694315122
 MonoBehaviour:
   m_ObjectHideFlags: 0
