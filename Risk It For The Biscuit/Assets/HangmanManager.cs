@@ -1,31 +1,39 @@
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
+public struct WordArea
+{
+    public GameObject Area;
+    public List<WordPad> Pads;
+    public string Word;
+}
 public class HangmanManager : MonoBehaviour
 {
     public List<char> Banco;
-    public string TargetWord;
     public int Lives = 5;
+    public int Difficulty = 0;
 
     public char CurrentChar;
 
     [SerializeField] public TMP_Text CurrentCharText;
-    [SerializeField] public GameObject WordArea;
     [SerializeField] public GameObject BancoArea;
+    [SerializeField] public GameObject WordsArea;
 
+    [SerializeField] public GameObject WordAreaPrefab;
     [SerializeField] public WordPad WordPadPrefab;
-    public List<WordPad> Pads;
+
+    public List<WordArea> Words;
+
 
     private void Awake()
     {
-
-        SetupRound("teste");
+        Words = new List<WordArea>();
+        Difficulty = 0;
+        List<string> words = new List<string>() { "teste" };
+        SetupRound(words);
 
         Keyboard.current.onTextInput += cha =>
         {
@@ -56,42 +64,77 @@ public class HangmanManager : MonoBehaviour
         };
     }
   
-    public void SetupRound(string targetWord)
+    public void SetupRound(List<string> targetWords)
     {
-        TargetWord = targetWord;
-        foreach (var pad in Pads)
+        Lives = 5;
+
+        foreach (Transform child in BancoArea.transform)
         {
-            Destroy(pad);
+            Destroy(child.gameObject);
+        }
+        Banco = new List<char>();
+
+        foreach (var word in Words)
+        {
+            foreach (var pad in word.Pads)
+            {
+                Destroy(pad);
+
+            }
+
+            Destroy(word.Area);
         }
 
-        Pads = new List<WordPad>();
+        Words = new List<WordArea>();
 
-        var i = 0;
-        foreach (var letter in TargetWord)
+        foreach (var targetWord in targetWords)
         {
-            WordPad newPad = Instantiate(WordPadPrefab);
-            newPad.Cha = letter;
-            Pads.Add(newPad);
-            newPad.transform.SetParent(WordArea.transform);
-            
+            WordArea word = new WordArea();
+            word.Word = targetWord;
+
+            GameObject WordArea = Instantiate(WordAreaPrefab);
+            WordArea.transform.SetParent(WordsArea.transform);
+            word.Area = WordArea;
+
+            List<WordPad> padList = new List<WordPad>();
+
+            foreach (var letter in targetWord)
+            {
+                WordPad newPad = Instantiate(WordPadPrefab);
+                newPad.Cha = letter;
+                padList.Add(newPad);
+                newPad.transform.SetParent(WordArea.transform);
+
+            }
+
+            word.Pads = padList;
+
+            Words.Add(word);
         }
+        
     }
 
     void CheckLetter(char cha)
     {
-        if (TargetWord.Contains(cha))
+        bool found = false;
+
+        foreach (var word in Words)
         {
-            AddToBanco(cha);
-
-            foreach (var pad in Pads.FindAll(x => x.Cha == cha))
+            if (word.Word.Contains(cha))
             {
-                pad.SetFound();
+                AddToBanco(cha);
+
+                foreach (var pad in word.Pads.FindAll(x => x.Cha == cha))
+                {
+                    pad.SetFound();
+                }
+
+                CheckEnd();
+                found = true;
             }
-
-            CheckEnd();
-
         }
-        else
+       
+        if(!found)
         {
             AddToBanco(cha);
             Lives = Lives - 1;
@@ -107,15 +150,23 @@ public class HangmanManager : MonoBehaviour
     void CheckEnd()
     {
 
-        foreach (var pad in Pads)
+        foreach (var word in Words)
         {
-            if(pad.Found == false)
+            foreach (var pad in word.Pads)
             {
-                return;
+                if (pad.Found == false)
+                {
+                    return;
+                }
             }
         }
 
+
         Debug.Log("win");
+        Difficulty += 1;
+        List<string> words = new List<string>() { "teste", "morte" };
+
+        SetupRound(words);
     }
 
 

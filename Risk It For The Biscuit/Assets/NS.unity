@@ -149,12 +149,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Banco: 
-  TargetWord: 
+  TargetWord: []
   Lives: 5
+  Difficulty: 0
   CurrentChar: 0
   CurrentCharText: {fileID: 1649367554}
-  WordArea: {fileID: 827299018}
   BancoArea: {fileID: 1955159338}
+  WordsArea: {fileID: 878736447}
+  WordAreaPrefab: {fileID: 1594194844251468733, guid: a7889d606e23b8749afb72c44d4bbf09, type: 3}
   WordPadPrefab: {fileID: 1339181284318428248, guid: ec49834f944035748a9f42aba973e617, type: 3}
   Pads: []
 --- !u!4 &43177077
@@ -206,7 +208,7 @@ RectTransform:
   m_Children:
   - {fileID: 1649367553}
   - {fileID: 1215664700}
-  - {fileID: 827299019}
+  - {fileID: 878736448}
   - {fileID: 1955159339}
   m_Father: {fileID: 43177077}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -278,7 +280,7 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!1 &827299018
+--- !u!1 &878736447
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -286,22 +288,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 827299019}
-  - component: {fileID: 827299020}
+  - component: {fileID: 878736448}
+  - component: {fileID: 878736449}
   m_Layer: 5
-  m_Name: WordArea
+  m_Name: WordAreas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &827299019
+--- !u!224 &878736448
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 827299018}
+  m_GameObject: {fileID: 878736447}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -311,16 +313,16 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 41.636963, y: 0}
-  m_SizeDelta: {x: -916.988, y: -980}
+  m_AnchoredPosition: {x: 30.994995, y: -45.0811}
+  m_SizeDelta: {x: -916.98, y: -465.9261}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &827299020
+--- !u!114 &878736449
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 827299018}
+  m_GameObject: {fileID: 878736447}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
@@ -334,8 +336,8 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
-  m_Spacing: {x: 5, y: 0}
+  m_CellSize: {x: 1000, y: 100}
+  m_Spacing: {x: 0, y: 5}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!1 &983081960
