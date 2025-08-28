@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2606043221ea8224292f3fc7ef2d30d9, type: 3}
-  m_Name: teste1
+  m_Name: teste3 3
   m_EditorClassIdentifier: 
-  powerUpType: 100
+  powerUpType: 1
   powerUpActionTime: 0
-  background: {fileID: -276657309103468857, guid: 7bbb431945171e242a52aa34d9a69834, type: 3}
-  powerUpName: teste1
-  description: teste1
+  background: {fileID: -5681091294098912270, guid: d3012143619d7f946952d9858211a765, type: 3}
+  powerUpName: teste 3
+  description: teste 3
   duration: 0
-  icon: {fileID: 1523928263507322770, guid: 7091acc5666761a4d820e9973854f519, type: 3}
+  icon: {fileID: -25300781324611178, guid: 7a9679609c1a5344aba644fcd0fc0df4, type: 3}
   canActivate: 0
   maxUses: 0

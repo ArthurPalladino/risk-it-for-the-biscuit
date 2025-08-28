@@ -12,8 +12,15 @@ public struct WordArea
 }
 public class HangmanManager : MonoBehaviour
 {
+    const int MAX_LIVES = 5;
+    public int curLives = MAX_LIVES;
+    public int maxGameplayLives = MAX_LIVES;
+
+    float points;
+
+    bool alreadyWon;
+
     public List<char> Banco;
-    public int Lives = 5;
     public int Difficulty = 0;
 
     public char CurrentChar;
@@ -25,8 +32,18 @@ public class HangmanManager : MonoBehaviour
     [SerializeField] public GameObject WordAreaPrefab;
     [SerializeField] public WordPad WordPadPrefab;
 
+    SelectedPowerUpsManager choosedPowerUps;
+
     public List<WordArea> Words;
 
+    PowerUpScreen powerUpScreen;
+
+    void Start()
+    {
+        choosedPowerUps = FindFirstObjectByType<SelectedPowerUpsManager>();
+        powerUpScreen = FindFirstObjectByType<PowerUpScreen>();
+        powerUpScreen.SetCardFunc(choosedPowerUps.AddPowerUp);
+    }
 
     private void Awake()
     {
@@ -63,10 +80,10 @@ public class HangmanManager : MonoBehaviour
             }
         };
     }
-  
+
     public void SetupRound(List<string> targetWords)
     {
-        Lives = 5;
+        curLives = 5;
 
         foreach (Transform child in BancoArea.transform)
         {
@@ -111,7 +128,7 @@ public class HangmanManager : MonoBehaviour
 
             Words.Add(word);
         }
-        
+
     }
 
     void CheckLetter(char cha)
@@ -133,17 +150,18 @@ public class HangmanManager : MonoBehaviour
                 found = true;
             }
         }
-       
-        if(!found)
+        //choosedPowerUps.DuringRound(GetContext());
+        if (!found)
         {
             AddToBanco(cha);
-            Lives = Lives - 1;
+            curLives -= 1;
 
-            if(Lives <= 0)
+            if (curLives <= 0)
             {
+                choosedPowerUps.EndRound(GetContext());
                 Debug.Log("morto");
             }
-           
+
         }
     }
 
@@ -162,8 +180,11 @@ public class HangmanManager : MonoBehaviour
         }
 
 
+        choosedPowerUps.EndRound(GetContext());
+        powerUpScreen.Activate();
         Debug.Log("win");
         Difficulty += 1;
+        curLives = maxGameplayLives;
         List<string> words = new List<string>() { "teste", "morte" };
 
         SetupRound(words);
@@ -174,6 +195,7 @@ public class HangmanManager : MonoBehaviour
     {
         if (!Banco.Contains(cha))
         {
+            
             Banco.Add(cha);
             WordPad newPad = Instantiate(WordPadPrefab);
             newPad.Cha = cha;
@@ -183,11 +205,27 @@ public class HangmanManager : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
+
+    List<string> GetCurrentWords()
     {
-        
+        List<string> currentWords = new List<string>();
+        foreach (var word in Words)
+        {
+            currentWords.Add(word.Word);
+        }
+        return currentWords;
     }
 
+    PowerUpContext GetContext()
+    {
+        return new PowerUpContext
+        {
+            CurChar = CurrentChar,
+            Points = points,
+            Lives = curLives,
+            Words = GetCurrentWords(),
+            Won = alreadyWon,
+        };
+    }
 
 }

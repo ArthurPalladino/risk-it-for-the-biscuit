@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2606043221ea8224292f3fc7ef2d30d9, type: 3}
-  m_Name: teste1
+  m_Name: teste1 3
   m_EditorClassIdentifier: 
   powerUpType: 100
   powerUpActionTime: 0

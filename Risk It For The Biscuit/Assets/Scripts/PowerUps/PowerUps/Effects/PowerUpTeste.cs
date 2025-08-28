@@ -4,8 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "PowerUps/TestPowerUp")]
 public class PowerUpTeste : PowerUp
 {
-   public override void Action()
+   public override void Apply(PowerUpContext context)
    {
-        Debug.Log("TESTE");
+      context.Points += 10;
    }
 }

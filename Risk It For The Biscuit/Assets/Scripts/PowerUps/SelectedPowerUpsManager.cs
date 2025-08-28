@@ -40,4 +40,34 @@ public class SelectedPowerUpsManager : MonoBehaviour
         selectedPowerUps.Clear();
     }
 
+        List<PowerUp> powerUps = new List<PowerUp>();
+
+
+    public void StartRound(PowerUpContext context)
+    {
+        var startPowerups = powerUps.FindAll(x => x.powerUpActionTime == PowerupActionTime.AtStart);
+        foreach (var powerUp in startPowerups)
+        {
+            powerUp.Apply(context);
+        }
+    }
+
+    public void DuringRound(PowerUpContext context)
+    {
+        var duringPowerups = powerUps.FindAll(x => x.powerUpActionTime == PowerupActionTime.DuringGame);
+        foreach (var powerUp in duringPowerups)
+        {
+            powerUp.Apply(context);
+        }
+    }
+
+    public void EndRound(PowerUpContext context)
+    {
+        var endPowerups = powerUps.FindAll(x => x.powerUpActionTime == PowerupActionTime.AtEnd);
+        foreach (var powerUp in endPowerups)
+        {
+            powerUp.Apply(context);
+        }
+    }
+
 }

@@ -31,18 +31,27 @@ public class PowerUpScreen : MonoBehaviour
             card.onSelect += OnSelect;
         }
         UpdateText();
-        SetupCards();
     }
-    void OnEnable()
+    public void Activate()
     {
+        SetupCards();
+        panelTransform.gameObject.SetActive(true);
         if (originalPos == Vector3.zero)
         {
             originalPos = panelTransform.position;
         }
-        SetupCards();
-        panelTransform.position = originalPos + Vector3.up * 10;
+        panelTransform.position = originalPos + Vector3.up * 1000f;
         panelTransform.DOMove(originalPos, 1);
     }
+
+    public void SetCardFunc(Action<PowerUp> AddOnList)
+    {
+        foreach (var card in cards)
+        {
+            card.onSelect += AddOnList;
+        }
+    }
+
     public void SetupCards()
     {
         foreach (var card in cards)
@@ -95,11 +104,11 @@ public class PowerUpScreen : MonoBehaviour
 
     public void Close()
     {
-        Vector3 offScreenPosition = transform.position + Vector3.down * 10f;
+        Vector3 offScreenPosition = transform.position + Vector3.down * 1000f;
 
         panelTransform.DOMove(offScreenPosition, 1).OnComplete(() =>
         {
-            gameObject.SetActive(false);
+            panelTransform.gameObject.SetActive(false);
         });
         AfterClose?.Invoke();
     }
@@ -121,7 +130,9 @@ public class PowerUpScreen : MonoBehaviour
             choosedRarity = PowerupRarity.Common;
 
         selectedList = availablePowerUps.Where(p => p.powerUpType == choosedRarity).ToList();
-        return selectedList[UnityEngine.Random.Range(0, selectedList.Count)];
+        var range = UnityEngine.Random.Range(0, selectedList.Count - 1);
+        var powerUp = selectedList[range];
+        return powerUp;
 }
 
     void UpdateText()
