@@ -12,9 +12,7 @@ public struct WordArea
 }
 public class HangmanManager : MonoBehaviour
 {
-    const int MAX_LIVES = 5;
-    public int curLives = MAX_LIVES;
-    public int maxGameplayLives = MAX_LIVES;
+    
 
     float points;
 
@@ -31,6 +29,10 @@ public class HangmanManager : MonoBehaviour
 
     [SerializeField] public GameObject WordAreaPrefab;
     [SerializeField] public WordPad WordPadPrefab;
+
+    [SerializeField] public List<Sprite> letterSprites;
+
+    [SerializeField] public PlayerManager player;
 
     SelectedPowerUpsManager choosedPowerUps;
 
@@ -83,7 +85,7 @@ public class HangmanManager : MonoBehaviour
 
     public void SetupRound(List<string> targetWords)
     {
-        curLives = 5;
+        player.restore();
 
         foreach (Transform child in BancoArea.transform)
         {
@@ -109,8 +111,11 @@ public class HangmanManager : MonoBehaviour
             WordArea word = new WordArea();
             word.Word = targetWord;
 
-            GameObject WordArea = Instantiate(WordAreaPrefab);
-            WordArea.transform.SetParent(WordsArea.transform);
+            GameObject WordArea = Instantiate(WordAreaPrefab, Vector3.zero, Quaternion.identity);
+            //WordArea.transform.position = new Vector3(WordArea.transform.position.x, WordArea.transform.position.y, 1);
+            //WordArea.transform.localPosition = new Vector3(WordArea.transform.localPosition.x, WordArea.transform.localPosition.y, 1);
+            WordArea.transform.localScale = WordsArea.transform.localScale;
+            WordArea.transform.SetParent(WordsArea.transform, false);
             word.Area = WordArea;
 
             List<WordPad> padList = new List<WordPad>();
@@ -119,8 +124,9 @@ public class HangmanManager : MonoBehaviour
             {
                 WordPad newPad = Instantiate(WordPadPrefab);
                 newPad.Cha = letter;
+                newPad.charSprite = letterSprites.Find(x => x.name == letter.ToString().ToUpper());
                 padList.Add(newPad);
-                newPad.transform.SetParent(WordArea.transform);
+                newPad.transform.SetParent(WordArea.transform, false);
 
             }
 
@@ -154,9 +160,9 @@ public class HangmanManager : MonoBehaviour
         if (!found)
         {
             AddToBanco(cha);
-            curLives -= 1;
+            player.removeHealth();
 
-            if (curLives <= 0)
+            if (player.curLives <= 0)
             {
                 choosedPowerUps.EndRound(GetContext());
                 Debug.Log("morto");
@@ -184,7 +190,7 @@ public class HangmanManager : MonoBehaviour
         powerUpScreen.Activate();
         Debug.Log("win");
         Difficulty += 1;
-        curLives = maxGameplayLives;
+        player.restore();
         List<string> words = new List<string>() { "teste", "morte" };
 
         SetupRound(words);
@@ -199,8 +205,9 @@ public class HangmanManager : MonoBehaviour
             Banco.Add(cha);
             WordPad newPad = Instantiate(WordPadPrefab);
             newPad.Cha = cha;
+            newPad.charSprite = letterSprites.Find(x => x.name == cha.ToString().ToUpper());
             newPad.SetFound();
-            newPad.transform.SetParent(BancoArea.transform);
+            newPad.transform.SetParent(BancoArea.transform, false);
         }
 
     }
@@ -222,7 +229,7 @@ public class HangmanManager : MonoBehaviour
         {
             CurChar = CurrentChar,
             Points = points,
-            Lives = curLives,
+            Lives = player.curLives,
             Words = GetCurrentWords(),
             Won = alreadyWon,
         };
