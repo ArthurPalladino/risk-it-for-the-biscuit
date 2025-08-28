@@ -18,14 +18,10 @@ public class BodyPart : MonoBehaviour
         image.gameObject.SetActive(false);
     }
 
-    public void Dismiss()
-    {
-        blood.Stop();
-    }
-
     public void Restore()
     {
         image.gameObject.SetActive(true);
+        blood.Stop();
     }
     
 }

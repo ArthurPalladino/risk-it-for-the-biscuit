@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,38 +14,40 @@ public class PlayerManager : MonoBehaviour
 
     [SerializeField] public List<BodyPart> BodyParts;
 
+    [SerializeField] public TMP_Text LivesText;
+
   
     public void restore()
     {
         curLives = MAX_LIVES;
+       
 
         foreach (BodyPart part in BodyParts)
         {
             part.Restore();
         }
+        updadeLivesText();
     }
 
     public void addHealth()
     {
         curLives += 1;
+        updadeLivesText();
     }
 
     public void removeHealth()
     {
         var part = BodyParts[BodyParts.Count - (curLives + 1)];
 
-        //if ((BodyParts.Count - (curLives + 1) - 1) > 0)
-        //{
-        //    var pastPart = BodyParts[BodyParts.Count - (curLives + 1) - 1];
-        //    if (pastPart != null)
-        //    {
-        //        pastPart.Dismiss();
-        //    }
-        //}
-
         part.Cut();
         
         curLives -= 1;
+        updadeLivesText();
     }
-  
+
+    private void updadeLivesText()
+    {
+        LivesText.text = curLives + "/" + MAX_LIVES;
+    }
+
 }
