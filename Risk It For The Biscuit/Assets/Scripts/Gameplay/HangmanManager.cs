@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public struct WordArea
 {
@@ -12,16 +15,14 @@ public struct WordArea
 }
 public class HangmanManager : MonoBehaviour
 {
-    const int MAX_LIVES = 5;
-    public int curLives = MAX_LIVES;
-    public int maxGameplayLives = MAX_LIVES;
+    
 
-    int points;
+    float points;
 
     bool alreadyWon;
 
     public List<char> Banco;
-    public int Difficulty = 0;
+    public int Difficulty = 1;
 
     public char CurrentChar;
 
@@ -32,33 +33,48 @@ public class HangmanManager : MonoBehaviour
     [SerializeField] public GameObject WordAreaPrefab;
     [SerializeField] public WordPad WordPadPrefab;
 
-    [SerializeField] TextMeshProUGUI pontuationText;
+    [SerializeField] public List<Sprite> letterSprites;
+
+    [SerializeField] public PlayerManager player;
+
+    [SerializeField] public UnityEngine.UI.Button SendLetter;
+    [SerializeField] public UnityEngine.UI.Button AddWord;
 
     SelectedPowerUpsManager choosedPowerUps;
-
-
 
     public List<WordArea> Words;
 
     PowerUpScreen powerUpScreen;
 
+    public List<string> PastWords;
+    public List<string> WordList;
+    
+
     void Start()
     {
-        pontuationText.text = "0/100";
         choosedPowerUps = FindFirstObjectByType<SelectedPowerUpsManager>();
         powerUpScreen = FindFirstObjectByType<PowerUpScreen>();
-        //TIRAR TODOS SETCARDFUNC DAQUI
         powerUpScreen.SetCardFunc(choosedPowerUps.AddPowerUp);
-        powerUpScreen.SetCardFunc(choosedPowerUps.AddPowerUp);
-        
     }
 
+    string GetWord()
+    {
+        var nl = WordList.FindAll(x => !PastWords.Contains(x));
+        var word = nl[UnityEngine.Random.Range(0, nl.Count-1)];
+        PastWords.Add(word);
+        Debug.Log(word);
+        return word;
+    }
+
+ 
     private void Awake()
     {
-        Words = new List<WordArea>();
-        Difficulty = 0;
-        List<string> words = new List<string>() { "teste" };
-        SetupRound(words);
+        
+        SendLetter.onClick.AddListener(SendLetterFunc);
+        AddWord.onClick.AddListener(AddWordFunc);
+
+
+        ResetGame();
 
         Keyboard.current.onTextInput += cha =>
         {
@@ -73,26 +89,40 @@ public class HangmanManager : MonoBehaviour
             }
             else
             {
-                if (cha == (char)ConsoleKey.Enter && char.IsLetter(CurrentChar) && !powerUpScreen.isChoosing)
+                if (cha == (char)ConsoleKey.Enter && char.IsLetter(CurrentChar))
                 {
-                    CheckLetter(CurrentChar);
-                    CurrentChar = ' ';
-                    CurrentCharText.text = "";
+                    SendLetterFunc();
                 }
-                else if (cha == (char)ConsoleKey.Delete || cha == (char)ConsoleKey.Backspace)
+                else if (cha == (char)ConsoleKey.Delete)
                 {
                     CurrentChar = ' ';
-                    CurrentCharText.text = "";
+                    CurrentCharText.text = " ";
                 }
 
             }
         };
     }
 
+    private void ResetGame()
+    {
+
+        PastWords = new List<string>();
+        WordList = new List<string>();
+
+        var dataset = Resources.Load("words");
+        WordList = dataset.ToString().Split(", ").ToList().FindAll(x => x.Length <= 9);
+
+        Words = new List<WordArea>();
+
+        Difficulty = 1;
+        List<string> words = new List<string>() { GetWord() };
+        SetupRound(words);
+
+    }
+
     public void SetupRound(List<string> targetWords)
     {
-        
-        curLives = maxGameplayLives;
+        player.restore();
 
         foreach (Transform child in BancoArea.transform)
         {
@@ -118,8 +148,11 @@ public class HangmanManager : MonoBehaviour
             WordArea word = new WordArea();
             word.Word = targetWord;
 
-            GameObject WordArea = Instantiate(WordAreaPrefab);
-            WordArea.transform.SetParent(WordsArea.transform);
+            GameObject WordArea = Instantiate(WordAreaPrefab, Vector3.zero, Quaternion.identity);
+            //WordArea.transform.position = new Vector3(WordArea.transform.position.x, WordArea.transform.position.y, 1);
+            //WordArea.transform.localPosition = new Vector3(WordArea.transform.localPosition.x, WordArea.transform.localPosition.y, 1);
+            WordArea.transform.localScale = WordsArea.transform.localScale;
+            WordArea.transform.SetParent(WordsArea.transform, false);
             word.Area = WordArea;
 
             List<WordPad> padList = new List<WordPad>();
@@ -128,8 +161,9 @@ public class HangmanManager : MonoBehaviour
             {
                 WordPad newPad = Instantiate(WordPadPrefab);
                 newPad.Cha = letter;
+                newPad.charSprite = letterSprites.Find(x => x.name == letter.ToString().ToUpper());
                 padList.Add(newPad);
-                newPad.transform.SetParent(WordArea.transform);
+                newPad.transform.SetParent(WordArea.transform, false);
 
             }
 
@@ -163,12 +197,13 @@ public class HangmanManager : MonoBehaviour
         if (!found)
         {
             AddToBanco(cha);
-            curLives -= 1;
+            player.removeHealth();
 
-            if (curLives <= 0)
+            if (player.curLives <= 0)
             {
                 choosedPowerUps.EndRound(GetContext());
                 Debug.Log("morto");
+                ResetGame();
             }
 
         }
@@ -191,14 +226,26 @@ public class HangmanManager : MonoBehaviour
 
         choosedPowerUps.EndRound(GetContext());
         powerUpScreen.Activate();
-        Debug.Log("win");
-        Difficulty += 1;
-        curLives = maxGameplayLives;
-        List<string> words = new List<string>() { "teste", "morte" };
+        Debug.Log("winRound");
+        if (Difficulty == 10)
+        {
+            Debug.Log("win total");
+        }
+        else
+        {
+            Difficulty += 1;
+            player.restore();
+            List<string> words = new List<string>();
+            int wordCount = (int)Math.Floor((double)Difficulty / 2);
+            if (wordCount < 1) wordCount = 1;
+            for (int i = 0; i < (int)Math.Floor((double)Difficulty / 2); i++)
+            {
+                words.Add(GetWord());
+            }
 
-        SetupRound(words);
+            SetupRound(words);
+        }
     }
-
 
     void AddToBanco(char cha)
     {
@@ -208,12 +255,12 @@ public class HangmanManager : MonoBehaviour
             Banco.Add(cha);
             WordPad newPad = Instantiate(WordPadPrefab);
             newPad.Cha = cha;
+            newPad.charSprite = letterSprites.Find(x => x.name == cha.ToString().ToUpper());
             newPad.SetFound();
-            newPad.transform.SetParent(BancoArea.transform);
+            newPad.transform.SetParent(BancoArea.transform, false);
         }
 
     }
-
 
     List<string> GetCurrentWords()
     {
@@ -231,12 +278,45 @@ public class HangmanManager : MonoBehaviour
         {
             CurChar = CurrentChar,
             Points = points,
-            PointsToSumBeforePowerUps = 0,
-            Lives = curLives,
+            Lives = player.curLives,
             Words = GetCurrentWords(),
             Won = alreadyWon,
-            Lose = curLives <= 0
         };
     }
 
+    public void SendLetterFunc()
+    {
+        CheckLetter(CurrentChar);
+        CurrentChar = ' ';
+        CurrentCharText.text = " ";
+    }
+    public void AddWordFunc()
+    {
+        if(Words.Count < 5)
+        {
+            WordArea word = new WordArea();
+            word.Word = GetWord();
+
+            GameObject WordArea = Instantiate(WordAreaPrefab, Vector3.zero, Quaternion.identity);
+            WordArea.transform.localScale = WordsArea.transform.localScale;
+            WordArea.transform.SetParent(WordsArea.transform, false);
+            word.Area = WordArea;
+
+            List<WordPad> padList = new List<WordPad>();
+
+            foreach (var letter in word.Word)
+            {
+                WordPad newPad = Instantiate(WordPadPrefab);
+                newPad.Cha = letter;
+                newPad.charSprite = letterSprites.Find(x => x.name == letter.ToString().ToUpper());
+                padList.Add(newPad);
+                newPad.transform.SetParent(WordArea.transform, false);
+
+            }
+
+            word.Pads = padList;
+
+            Words.Add(word);
+        }
+    }
 }

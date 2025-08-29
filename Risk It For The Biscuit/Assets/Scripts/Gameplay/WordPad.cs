@@ -1,30 +1,30 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WordPad : MonoBehaviour
 {
     public char Cha;
-    public TMP_Text TextBox;
     public bool Found = false;
+    public Image Letter;
+    public Sprite charSprite;
 
-    public WordPad(char cha)
-    {
-        Cha = cha;
-    }
 
     private void Awake()
     {
-        TextBox.text = "";
+        Letter.sprite = null;
+        Letter.color = new Color(0, 0, 0, 0);
     }
 
     public void SetFound()
     {
-        TextBox.text = Cha.ToString();
+        Letter.color = new Color(1, 1, 1, 1);
+        Letter.sprite = charSprite;
         Found = true;
     }
-  
+
     void Update()
     {
-        
+
     }
 }
