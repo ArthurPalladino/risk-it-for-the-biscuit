@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public struct WordArea
 {
@@ -19,7 +22,7 @@ public class HangmanManager : MonoBehaviour
     bool alreadyWon;
 
     public List<char> Banco;
-    public int Difficulty = 0;
+    public int Difficulty = 1;
 
     public char CurrentChar;
 
@@ -34,11 +37,18 @@ public class HangmanManager : MonoBehaviour
 
     [SerializeField] public PlayerManager player;
 
+    [SerializeField] public UnityEngine.UI.Button SendLetter;
+    [SerializeField] public UnityEngine.UI.Button AddWord;
+
     SelectedPowerUpsManager choosedPowerUps;
 
     public List<WordArea> Words;
 
     PowerUpScreen powerUpScreen;
+
+    public List<string> PastWords;
+    public List<string> WordList;
+    
 
     void Start()
     {
@@ -47,12 +57,24 @@ public class HangmanManager : MonoBehaviour
         powerUpScreen.SetCardFunc(choosedPowerUps.AddPowerUp);
     }
 
+    string GetWord()
+    {
+        var nl = WordList.FindAll(x => !PastWords.Contains(x));
+        var word = nl[UnityEngine.Random.Range(0, nl.Count-1)];
+        PastWords.Add(word);
+        Debug.Log(word);
+        return word;
+    }
+
+ 
     private void Awake()
     {
-        Words = new List<WordArea>();
-        Difficulty = 0;
-        List<string> words = new List<string>() { "teste" };
-        SetupRound(words);
+        
+        SendLetter.onClick.AddListener(SendLetterFunc);
+        AddWord.onClick.AddListener(AddWordFunc);
+
+
+        ResetGame();
 
         Keyboard.current.onTextInput += cha =>
         {
@@ -69,18 +91,33 @@ public class HangmanManager : MonoBehaviour
             {
                 if (cha == (char)ConsoleKey.Enter && char.IsLetter(CurrentChar))
                 {
-                    CheckLetter(CurrentChar);
-                    CurrentChar = ' ';
-                    CurrentCharText.text = "";
+                    SendLetterFunc();
                 }
                 else if (cha == (char)ConsoleKey.Delete)
                 {
                     CurrentChar = ' ';
-                    CurrentCharText.text = "";
+                    CurrentCharText.text = " ";
                 }
 
             }
         };
+    }
+
+    private void ResetGame()
+    {
+
+        PastWords = new List<string>();
+        WordList = new List<string>();
+
+        var dataset = Resources.Load("words");
+        WordList = dataset.ToString().Split(", ").ToList().FindAll(x => x.Length <= 9);
+
+        Words = new List<WordArea>();
+
+        Difficulty = 1;
+        List<string> words = new List<string>() { GetWord() };
+        SetupRound(words);
+
     }
 
     public void SetupRound(List<string> targetWords)
@@ -166,6 +203,7 @@ public class HangmanManager : MonoBehaviour
             {
                 choosedPowerUps.EndRound(GetContext());
                 Debug.Log("morto");
+                ResetGame();
             }
 
         }
@@ -188,14 +226,26 @@ public class HangmanManager : MonoBehaviour
 
         choosedPowerUps.EndRound(GetContext());
         powerUpScreen.Activate();
-        Debug.Log("win");
-        Difficulty += 1;
-        player.restore();
-        List<string> words = new List<string>() { "teste", "morte" };
+        Debug.Log("winRound");
+        if (Difficulty == 10)
+        {
+            Debug.Log("win total");
+        }
+        else
+        {
+            Difficulty += 1;
+            player.restore();
+            List<string> words = new List<string>();
+            int wordCount = (int)Math.Floor((double)Difficulty / 2);
+            if (wordCount < 1) wordCount = 1;
+            for (int i = 0; i < (int)Math.Floor((double)Difficulty / 2); i++)
+            {
+                words.Add(GetWord());
+            }
 
-        SetupRound(words);
+            SetupRound(words);
+        }
     }
-
 
     void AddToBanco(char cha)
     {
@@ -211,7 +261,6 @@ public class HangmanManager : MonoBehaviour
         }
 
     }
-
 
     List<string> GetCurrentWords()
     {
@@ -235,4 +284,39 @@ public class HangmanManager : MonoBehaviour
         };
     }
 
+    public void SendLetterFunc()
+    {
+        CheckLetter(CurrentChar);
+        CurrentChar = ' ';
+        CurrentCharText.text = " ";
+    }
+    public void AddWordFunc()
+    {
+        if(Words.Count < 5)
+        {
+            WordArea word = new WordArea();
+            word.Word = GetWord();
+
+            GameObject WordArea = Instantiate(WordAreaPrefab, Vector3.zero, Quaternion.identity);
+            WordArea.transform.localScale = WordsArea.transform.localScale;
+            WordArea.transform.SetParent(WordsArea.transform, false);
+            word.Area = WordArea;
+
+            List<WordPad> padList = new List<WordPad>();
+
+            foreach (var letter in word.Word)
+            {
+                WordPad newPad = Instantiate(WordPadPrefab);
+                newPad.Cha = letter;
+                newPad.charSprite = letterSprites.Find(x => x.name == letter.ToString().ToUpper());
+                padList.Add(newPad);
+                newPad.transform.SetParent(WordArea.transform, false);
+
+            }
+
+            word.Pads = padList;
+
+            Words.Add(word);
+        }
+    }
 }
