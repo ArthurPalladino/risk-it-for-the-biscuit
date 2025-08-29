@@ -16,7 +16,7 @@ public class HangmanManager : MonoBehaviour
     public int curLives = MAX_LIVES;
     public int maxGameplayLives = MAX_LIVES;
 
-    float points;
+    int points;
 
     bool alreadyWon;
 
@@ -32,7 +32,11 @@ public class HangmanManager : MonoBehaviour
     [SerializeField] public GameObject WordAreaPrefab;
     [SerializeField] public WordPad WordPadPrefab;
 
+    [SerializeField] TextMeshProUGUI pontuationText;
+
     SelectedPowerUpsManager choosedPowerUps;
+
+
 
     public List<WordArea> Words;
 
@@ -40,9 +44,13 @@ public class HangmanManager : MonoBehaviour
 
     void Start()
     {
+        pontuationText.text = "0/100";
         choosedPowerUps = FindFirstObjectByType<SelectedPowerUpsManager>();
         powerUpScreen = FindFirstObjectByType<PowerUpScreen>();
+        //TIRAR TODOS SETCARDFUNC DAQUI
         powerUpScreen.SetCardFunc(choosedPowerUps.AddPowerUp);
+        powerUpScreen.SetCardFunc(choosedPowerUps.AddPowerUp);
+        
     }
 
     private void Awake()
@@ -65,13 +73,13 @@ public class HangmanManager : MonoBehaviour
             }
             else
             {
-                if (cha == (char)ConsoleKey.Enter && char.IsLetter(CurrentChar))
+                if (cha == (char)ConsoleKey.Enter && char.IsLetter(CurrentChar) && !powerUpScreen.isChoosing)
                 {
                     CheckLetter(CurrentChar);
                     CurrentChar = ' ';
                     CurrentCharText.text = "";
                 }
-                else if (cha == (char)ConsoleKey.Delete)
+                else if (cha == (char)ConsoleKey.Delete || cha == (char)ConsoleKey.Backspace)
                 {
                     CurrentChar = ' ';
                     CurrentCharText.text = "";
@@ -83,7 +91,8 @@ public class HangmanManager : MonoBehaviour
 
     public void SetupRound(List<string> targetWords)
     {
-        curLives = 5;
+        
+        curLives = maxGameplayLives;
 
         foreach (Transform child in BancoArea.transform)
         {
@@ -222,9 +231,11 @@ public class HangmanManager : MonoBehaviour
         {
             CurChar = CurrentChar,
             Points = points,
+            PointsToSumBeforePowerUps = 0,
             Lives = curLives,
             Words = GetCurrentWords(),
             Won = alreadyWon,
+            Lose = curLives <= 0
         };
     }
 

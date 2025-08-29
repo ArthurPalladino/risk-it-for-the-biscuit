@@ -13,7 +13,11 @@ public class Card : MonoBehaviour
     [SerializeField] Sprite cardBackSprite;
 
     [SerializeField] float rotationDuration = 2;
+
+    [SerializeField] PowerUpGrid powerUpGrid;
     PowerUp powerUp;
+
+    bool gameplayCard = false;
 
     public Action<PowerUp> onSelect;
 
@@ -21,6 +25,7 @@ public class Card : MonoBehaviour
     public void OnClick()
     {
         onSelect?.Invoke(powerUp);
+        powerUpGrid.SetPowerUpsInGrid();
     }
 
     public PowerUp GetPowerUp()
@@ -30,11 +35,9 @@ public class Card : MonoBehaviour
 
     public void SetPowerUp(PowerUp newPowerUp)
     {
-        if (newPowerUp != powerUp)
-        {
-            powerUp = newPowerUp;
-            RefreshCard();
-        }
+        powerUp = newPowerUp;
+        RefreshCard();
+
     }
 
     // public void RefreshCard()

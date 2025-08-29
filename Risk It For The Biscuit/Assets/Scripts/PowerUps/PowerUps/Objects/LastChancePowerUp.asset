@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2606043221ea8224292f3fc7ef2d30d9, type: 3}
-  m_Name: teste1
+  m_Name: LastChancePowerUp
   m_EditorClassIdentifier: 
-  powerUpType: 100
-  powerUpActionTime: 0
-  background: {fileID: -276657309103468857, guid: 7bbb431945171e242a52aa34d9a69834, type: 3}
-  powerUpName: teste1
-  description: teste1
+  powerUpType: 4
+  powerUpActionTime: 2
+  background: {fileID: 0}
+  powerUpName: Last Chance
+  description: When you are about to lose, it gives you 1 life point.
   duration: 0
-  icon: {fileID: 1523928263507322770, guid: 7091acc5666761a4d820e9973854f519, type: 3}
+  icon: {fileID: 0}
   canActivate: 0
-  maxUses: 0
+  maxUses: 1

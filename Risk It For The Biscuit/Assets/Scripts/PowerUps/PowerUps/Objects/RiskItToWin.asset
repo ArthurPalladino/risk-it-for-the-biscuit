@@ -9,15 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2606043221ea8224292f3fc7ef2d30d9, type: 3}
-  m_Name: teste3 3
+  m_Script: {fileID: 11500000, guid: 2c8fe67fdf2d2b94c95f3cc9474bf5f7, type: 3}
+  m_Name: RiskItToWin
   m_EditorClassIdentifier: 
-  powerUpType: 1
+  powerUpType: 4
   powerUpActionTime: 0
-  background: {fileID: -5681091294098912270, guid: d3012143619d7f946952d9858211a765, type: 3}
-  powerUpName: teste 3
-  description: teste 3
+  background: {fileID: 0}
+  powerUpName: Risk It To Win
+  description: Permanently loses 2 life is but get 1.5x more points.
   duration: 0
-  icon: {fileID: -25300781324611178, guid: 7a9679609c1a5344aba644fcd0fc0df4, type: 3}
+  icon: {fileID: 0}
   canActivate: 0
   maxUses: 0

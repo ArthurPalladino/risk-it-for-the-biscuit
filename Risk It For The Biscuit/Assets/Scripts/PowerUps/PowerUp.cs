@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class PowerUp : ScriptableObject
 {
-    HangmanManager hangmanManager;
     public PowerupRarity powerUpType;
     public PowerupActionTime powerUpActionTime;
     public Sprite background;
@@ -18,9 +17,8 @@ public class PowerUp : ScriptableObject
     public int maxUses;
 
 
-    public void Start()
+    public void OnEnable()
     {
-        hangmanManager = FindFirstObjectByType<HangmanManager>();
         background = Resources.Load<Sprite>("PowerUps/Backgrounds/" + powerUpType.ToString() + "Background");
     }
 
