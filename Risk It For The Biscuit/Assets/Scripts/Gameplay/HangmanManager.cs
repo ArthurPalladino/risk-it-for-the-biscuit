@@ -15,9 +15,9 @@ public struct WordArea
 }
 public class HangmanManager : MonoBehaviour
 {
-    
+    [SerializeField] TextMeshProUGUI scoreText;
+    float pointsToWin = 100;
 
-    float points;
 
     bool alreadyWon;
 
@@ -48,28 +48,28 @@ public class HangmanManager : MonoBehaviour
 
     public List<string> PastWords;
     public List<string> WordList;
-    
+
 
     void Start()
     {
         choosedPowerUps = FindFirstObjectByType<SelectedPowerUpsManager>();
         powerUpScreen = FindFirstObjectByType<PowerUpScreen>();
-        powerUpScreen.SetCardFunc(choosedPowerUps.AddPowerUp);
+        GameStateManager.instance.SetState(GameState.Playing);
     }
 
     string GetWord()
     {
         var nl = WordList.FindAll(x => !PastWords.Contains(x));
-        var word = nl[UnityEngine.Random.Range(0, nl.Count-1)];
+        var word = nl[UnityEngine.Random.Range(0, nl.Count - 1)];
         PastWords.Add(word);
         Debug.Log(word);
         return word;
     }
 
- 
+
     private void Awake()
     {
-        
+
         SendLetter.onClick.AddListener(SendLetterFunc);
         AddWord.onClick.AddListener(AddWordFunc);
 
@@ -78,7 +78,7 @@ public class HangmanManager : MonoBehaviour
 
         Keyboard.current.onTextInput += cha =>
         {
-
+            if (GameStateManager.instance.GetState() != GameState.Playing) return;
             if (char.IsLetter(cha))
             {
                 if (!Banco.Contains(cha))
@@ -105,7 +105,6 @@ public class HangmanManager : MonoBehaviour
 
     private void ResetGame()
     {
-
         PastWords = new List<string>();
         WordList = new List<string>();
 
@@ -123,7 +122,7 @@ public class HangmanManager : MonoBehaviour
     public void SetupRound(List<string> targetWords)
     {
         player.restore();
-
+        scoreText.text = 0 + " / " + pointsToWin;
         foreach (Transform child in BancoArea.transform)
         {
             Destroy(child.gameObject);
@@ -177,7 +176,7 @@ public class HangmanManager : MonoBehaviour
     void CheckLetter(char cha)
     {
         bool found = false;
-
+        bool newWord = false;
         foreach (var word in Words)
         {
             if (word.Word.Contains(cha))
@@ -188,11 +187,20 @@ public class HangmanManager : MonoBehaviour
                 {
                     pad.SetFound();
                 }
+                if (player.points >= pointsToWin)
+                {
+                    CheckEnd();
+                }
+                else
+                {
+                    newWord = true;
+                    
+                }
 
-                CheckEnd();
                 found = true;
             }
         }
+        if (newWord) GetNewWord();
         //choosedPowerUps.DuringRound(GetContext());
         if (!found)
         {
@@ -208,22 +216,31 @@ public class HangmanManager : MonoBehaviour
 
         }
     }
-
-    void CheckEnd()
+    void GetNewWord()
     {
-
+        if (CheckIfAllFound())
+        {
+            AddWordFunc();
+            ResetBanco();
+        }
+    }
+    bool CheckIfAllFound()
+    {
         foreach (var word in Words)
         {
             foreach (var pad in word.Pads)
             {
                 if (pad.Found == false)
                 {
-                    return;
+                    return false;
                 }
             }
         }
-
-
+        return true;
+    }
+    void CheckEnd()
+    {
+        if (!CheckIfAllFound()) return;
         choosedPowerUps.EndRound(GetContext());
         powerUpScreen.Activate();
         Debug.Log("winRound");
@@ -261,7 +278,13 @@ public class HangmanManager : MonoBehaviour
         }
 
     }
-
+    void ResetBanco() {
+        foreach (Transform child in BancoArea.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        Banco = new List<char>();
+    }
     List<string> GetCurrentWords()
     {
         List<string> currentWords = new List<string>();
@@ -277,7 +300,7 @@ public class HangmanManager : MonoBehaviour
         return new PowerUpContext
         {
             CurChar = CurrentChar,
-            Points = points,
+            Points = player.points,
             Lives = player.curLives,
             Words = GetCurrentWords(),
             Won = alreadyWon,
@@ -286,9 +309,13 @@ public class HangmanManager : MonoBehaviour
 
     public void SendLetterFunc()
     {
-        CheckLetter(CurrentChar);
-        CurrentChar = ' ';
-        CurrentCharText.text = " ";
+        if (GameStateManager.instance.GetState() == GameState.Playing && CurrentChar != ' ')
+        {
+            CheckLetter(CurrentChar);
+            CurrentChar = ' ';
+            CurrentCharText.text = " ";
+        }
+        
     }
     public void AddWordFunc()
     {

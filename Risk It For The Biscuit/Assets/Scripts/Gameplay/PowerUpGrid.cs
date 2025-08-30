@@ -50,7 +50,9 @@ public class PowerUpGrid : MonoBehaviour
                 
                 button.onClick.AddListener(() =>
                     {
-                        powerUpCard.SetPowerUp(puList[puIndex]);
+                        if (GameStateManager.instance.GetState() != GameState.Playing && GameStateManager.instance.GetState() != GameState.VisualizingPowerUps) return;
+                        GameStateManager.instance.SetState(GameState.VisualizingPowerUps);
+                        powerUpCard.SetPowerUp(puList[puIndex], false);
                         powerUpCard.gameObject.SetActive(true);
                     }
                 );

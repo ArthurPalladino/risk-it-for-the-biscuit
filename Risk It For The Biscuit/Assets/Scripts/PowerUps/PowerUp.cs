@@ -7,7 +7,7 @@ public class PowerUp : ScriptableObject
 {
     public PowerupRarity powerUpType;
     public PowerupActionTime powerUpActionTime;
-    public Sprite background;
+    public Color background;
     public string powerUpName;
     public string description;
     public float duration;
@@ -19,7 +19,26 @@ public class PowerUp : ScriptableObject
 
     public void OnEnable()
     {
-        background = Resources.Load<Sprite>("PowerUps/Backgrounds/" + powerUpType.ToString() + "Background");
+        if(powerUpType == PowerupRarity.Common)
+        {
+            background = Color.white;
+        }
+        else if(powerUpType == PowerupRarity.Epic)
+        {
+            background = Color.magenta;
+        }
+        else if(powerUpType == PowerupRarity.Rare)
+        {
+            background = Color.blue;
+        }
+        else if(powerUpType == PowerupRarity.Legendary)
+        {
+            background = Color.red;
+        }
+        else
+        {
+            background = Color.gray;
+        }
     }
 
     public void Setup()

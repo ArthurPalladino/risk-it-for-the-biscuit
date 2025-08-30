@@ -21,7 +21,6 @@ public class PowerUpScreen : MonoBehaviour
     TextMeshProUGUI refreshText;
     int refreshTimes = 2;
 
-    public bool isChoosing { get; private set; }
     Action AfterClose;
     Vector3 originalPos;
     void Start()
@@ -36,7 +35,7 @@ public class PowerUpScreen : MonoBehaviour
     }
     public void Activate()
     {
-        isChoosing = true;
+        GameStateManager.instance.SetState(GameState.BuyingPowerUp);
         SetupCards();
         panelTransform.gameObject.SetActive(true);
         if (originalPos == Vector3.zero)
@@ -68,7 +67,7 @@ public class PowerUpScreen : MonoBehaviour
 
     void OnSelect(PowerUp powerUp)
     {
-        isChoosing = false;
+        
         SelectedPowerUp = powerUp;
         SelectedPowerUpsManager.Instance.AddPowerUp(SelectedPowerUp);
         Close();
@@ -141,7 +140,7 @@ public class PowerUpScreen : MonoBehaviour
             var powerUp = selectedList[range];
             return powerUp;
         }
-        catch (Exception e)
+        catch 
         {
             return allPowerUps[0];
         }
