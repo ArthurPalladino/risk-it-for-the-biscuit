@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d35c6946551c8024fb596ed7bf29b2ad, type: 3}
+  m_Name: OneLetterWord
+  m_EditorClassIdentifier: 
+  powerUpRarity: 60
+  powerUpType: 0
+  background: {r: 1, g: 1, b: 1, a: 1}
+  powerUpName: One Letter Word?
+  description: Earn 1.5x points if the correct letter appears 3 or more times
+  duration: 0
+  icon: {fileID: 3052218197092107100, guid: a349365d26df4bd45913bc63f708ad18, type: 3}
+  maxUses: 0

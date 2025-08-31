@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SelectedPowerUpsManager : MonoBehaviour
 {
     public static SelectedPowerUpsManager Instance;
+    public Action OnClear;
     void Awake()
     {
         // Singleton pattern
@@ -38,36 +40,8 @@ public class SelectedPowerUpsManager : MonoBehaviour
     public void ClearPowerUps()
     {
         selectedPowerUps.Clear();
+        OnClear?.Invoke();
     }
 
-        List<PowerUp> powerUps = new List<PowerUp>();
-
-
-    public void StartRound(PowerUpContext context)
-    {
-        var startPowerups = powerUps.FindAll(x => x.powerUpActionTime == PowerupActionTime.AtStart);
-        foreach (var powerUp in startPowerups)
-        {
-            powerUp.Apply(context);
-        }
-    }
-
-    public void DuringRound(PowerUpContext context)
-    {
-        var duringPowerups = powerUps.FindAll(x => x.powerUpActionTime == PowerupActionTime.DuringGame);
-        foreach (var powerUp in duringPowerups)
-        {
-            powerUp.Apply(context);
-        }
-    }
-
-    public void EndRound(PowerUpContext context)
-    {
-        var endPowerups = powerUps.FindAll(x => x.powerUpActionTime == PowerupActionTime.AtEnd);
-        foreach (var powerUp in endPowerups)
-        {
-            powerUp.Apply(context);
-        }
-    }
 
 }

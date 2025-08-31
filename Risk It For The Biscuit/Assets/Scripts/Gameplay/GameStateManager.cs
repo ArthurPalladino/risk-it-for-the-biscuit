@@ -7,7 +7,8 @@ public enum GameState
     MainMenu,
     Playing,
     BuyingPowerUp,
-    VisualizingPowerUps
+    VisualizingPowerUps,
+    FinalScreen
 }
 
 public class GameStateManager : MonoBehaviour

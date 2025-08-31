@@ -12,12 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de6946083a9dca347b923c54cef98e5f, type: 3}
   m_Name: DoubleConsonant
   m_EditorClassIdentifier: 
-  powerUpType: 100
-  powerUpActionTime: 0
-  background: {fileID: -2253430977958058911, guid: 8c2676d223ed2144a85f281aad566442, type: 3}
+  powerUpRarity: 60
+  powerUpType: 0
+  background: {r: 1, g: 1, b: 1, a: 1}
   powerUpName: Double Consonant
   description: If you accept two consonants in a row you earn 1.5x more points.
   duration: 0
-  icon: {fileID: 3473359137553555466, guid: dd925f21b1954c447b87f5e6362ace2d, type: 3}
-  canActivate: 0
+  icon: {fileID: 3052218197092107100, guid: a349365d26df4bd45913bc63f708ad18, type: 3}
   maxUses: 0

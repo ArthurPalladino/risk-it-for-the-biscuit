@@ -12,12 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2606043221ea8224292f3fc7ef2d30d9, type: 3}
   m_Name: LastChancePowerUp
   m_EditorClassIdentifier: 
-  powerUpType: 4
-  powerUpActionTime: 2
-  background: {fileID: 0}
+  powerUpRarity: 40
+  powerUpType: 1
+  background: {r: 0, g: 0, b: 1, a: 1}
   powerUpName: Last Chance
   description: When you are about to lose, it gives you 1 life point.
   duration: 0
-  icon: {fileID: 0}
-  canActivate: 0
+  icon: {fileID: 3052218197092107100, guid: a349365d26df4bd45913bc63f708ad18, type: 3}
   maxUses: 1

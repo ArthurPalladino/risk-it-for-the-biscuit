@@ -10,10 +10,10 @@ using UnityEngine.UI;
 public class PowerUpScreen : MonoBehaviour
 {
     [SerializeField] List<PowerUp> allPowerUps;
-    [SerializeField] Card[] cards;
+    [SerializeField] public Card[] cards;
     [SerializeField] Transform panelTransform;
 
-    PowerUp SelectedPowerUp;
+    public PowerUp SelectedPowerUp;
 
     [SerializeField] Button refreshButton;
 
@@ -50,6 +50,7 @@ public class PowerUpScreen : MonoBehaviour
     {
         foreach (var card in cards)
         {
+            
             card.onSelect += AddOnList;
             
         }
@@ -60,7 +61,6 @@ public class PowerUpScreen : MonoBehaviour
         foreach (var card in cards)
         {
             PowerUp powerUp = GetRandomPowerUp();
-            powerUp.Setup();
             card.SetPowerUp(powerUp);
         }
     }
@@ -70,6 +70,8 @@ public class PowerUpScreen : MonoBehaviour
         
         SelectedPowerUp = powerUp;
         SelectedPowerUpsManager.Instance.AddPowerUp(SelectedPowerUp);
+        GameStateManager.instance.SetState(GameState.Playing);
+
         Close();
     }
 
@@ -119,36 +121,46 @@ public class PowerUpScreen : MonoBehaviour
 
     PowerUp GetRandomPowerUp(int curLevel = 1)
     {
-
-        List<PowerUp> availablePowerUps = allPowerUps.Where(p => !cards.Any(c => c.GetPowerUp() == p)).ToList();
+        
+        List<PowerUp> availablePowerUps = allPowerUps
+        .Where(p => !cards.Any(c => c.GetPowerUp() == p))
+        .Select(p => ScriptableObject.Instantiate(p))
+        .ToList();
         float rand = UnityEngine.Random.value * 100f;
         List<PowerUp> selectedList;
         PowerupRarity choosedRarity;
-        if (rand <= (int)PowerupRarity.Legendary)
-            choosedRarity = PowerupRarity.Legendary;
-        else if (rand <= (int)PowerupRarity.Rare)
+        if (rand <= 40f)
             choosedRarity = PowerupRarity.Rare;
-        else if (rand <= (int)PowerupRarity.Epic)
-            choosedRarity = PowerupRarity.Epic;
         else
             choosedRarity = PowerupRarity.Common;
 
-        selectedList = availablePowerUps.Where(p => p.powerUpType == choosedRarity).ToList();
+        selectedList = availablePowerUps.Where(p => p.powerUpRarity == choosedRarity).ToList();
         var range = UnityEngine.Random.Range(0, selectedList.Count - 1);
+        Debug.Log(range);
+        Debug.Log(selectedList.Count());
         try
         {
             var powerUp = selectedList[range];
             return powerUp;
         }
-        catch 
+        catch (Exception e)
         {
+            Debug.Log(e);
             return allPowerUps[0];
         }
-}
+    }
 
     void UpdateText()
     {
         refreshText.text = refreshTimes.ToString();
+    }
+
+    public void ResetPowerUps()
+    {
+        foreach (var pu in allPowerUps)
+        {
+            pu.alreadyActivate = false;
+        }
     }
 
     void SetRefreshTimes(int times)

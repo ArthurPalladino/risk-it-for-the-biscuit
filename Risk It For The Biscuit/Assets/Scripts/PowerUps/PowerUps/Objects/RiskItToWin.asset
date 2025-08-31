@@ -12,12 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c8fe67fdf2d2b94c95f3cc9474bf5f7, type: 3}
   m_Name: RiskItToWin
   m_EditorClassIdentifier: 
-  powerUpType: 4
-  powerUpActionTime: 0
-  background: {fileID: 0}
+  powerUpRarity: 40
+  powerUpType: 3
+  background: {r: 0, g: 0, b: 1, a: 1}
   powerUpName: Risk It To Win
   description: Permanently loses 2 life is but get 1.5x more points.
   duration: 0
-  icon: {fileID: 0}
-  canActivate: 0
+  icon: {fileID: 3052218197092107100, guid: a349365d26df4bd45913bc63f708ad18, type: 3}
   maxUses: 0

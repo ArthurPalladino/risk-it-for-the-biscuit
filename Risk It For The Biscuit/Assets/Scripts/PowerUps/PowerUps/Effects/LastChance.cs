@@ -7,9 +7,11 @@ public class LastChance : PowerUp
    /// Quando o jogador está prestes a perder, este power-up é ativado e dando 1 vida a mais.
    public override void Apply(PowerUpContext context)
    {
-      if(context.Lose)
+      if (alreadyActivate && context.player.curLives<=0)
       {
-         context.Lives += 1;
+         context.player.addHealth();
+         base.Apply(context);
       }
+   
    }
 }

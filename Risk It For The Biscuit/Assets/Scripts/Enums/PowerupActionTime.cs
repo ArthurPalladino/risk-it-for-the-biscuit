@@ -1,8 +1,15 @@
 using UnityEngine;
 
-public enum PowerupActionTime
+public enum PowerUpType
 {
-    AtStart,
-    DuringGame,
-    AtEnd
+    Points,
+
+    LastChance,
+
+    CurLife,
+
+    GameplayLife,
+
+    WordBuyer,
+
 }

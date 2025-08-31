@@ -6,7 +6,7 @@ public class AudioManager : MonoBehaviour
 {
     List<AudioSource> audioSources = new List<AudioSource>();
     public static AudioManager Instance;
-    [SerializeField] float volume = 0.5f;
+    [SerializeField] float volume;
     void Start()
     {
         if (Instance == null)

@@ -66,15 +66,13 @@ public class Card : MonoBehaviour
 
     public void RefreshCardGrid()
     {
-        float halfScreenWidth = Screen.width / 2f - transform.localScale.x * 50f;
-        float halfScreenHeight = Screen.height / 2f - transform.localScale.y * 50f;
         background.color = powerUp.background;
         sprite.sprite = powerUp.icon;
         title.text = powerUp.powerUpName;
         description.text = powerUp.description;
 
         Sequence seq = DOTween.Sequence();
-        seq.Append(transform.DOMove(new Vector3(halfScreenWidth, halfScreenHeight, 0), 1f).SetEase(Ease.OutQuad));
+        seq.Append(transform.DOMove(new Vector3(0, 0, 1), 1f).SetEase(Ease.OutQuad));
         seq.Join(transform.DORotate(new Vector3(0, 720, 0), 1f, RotateMode.FastBeyond360));
         seq.Append(transform.DORotate(Vector3.zero, 0.3f));
 
@@ -83,10 +81,6 @@ public class Card : MonoBehaviour
 
     void CloseCardGrid()
     {
-
-        float halfScreenWidth = Screen.width / 2f - transform.localScale.x * 50f; 
-        float halfScreenHeight = Screen.height / 2f - transform.localScale.y * 50f;
-
         Sequence seq = DOTween.Sequence();
         seq.Append(transform.DOMove(originalPos, 1f).SetEase(Ease.OutQuad));
         seq.Join(transform.DORotate(new Vector3(0, 720, 0), 1f, RotateMode.FastBeyond360));

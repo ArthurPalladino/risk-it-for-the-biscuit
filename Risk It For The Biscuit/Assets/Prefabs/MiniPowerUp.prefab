@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: DOUBLE CONSOANT
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: bfe16b4ceb3a63149b43a03b3945735f, type: 2}
+  m_sharedMaterial: {fileID: 5102408020338620575, guid: bfe16b4ceb3a63149b43a03b3945735f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 8736647156960153822}
   - component: {fileID: 1431936813969073437}
   - component: {fileID: 2997110829816694281}
+  - component: {fileID: 8511487424667698265}
   m_Layer: 5
   m_Name: MiniPowerUp
   m_TagString: Untagged
@@ -164,7 +165,7 @@ RectTransform:
   m_GameObject: {fileID: 8734671278279528708}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.63814205, y: 0.63814205, z: 0.63814205}
+  m_LocalScale: {x: 3.232892, y: 3.232892, z: 3.232892}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6027826316882208253}
@@ -257,3 +258,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8511487424667698265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8734671278279528708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1

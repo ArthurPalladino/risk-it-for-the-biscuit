@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -8,20 +11,30 @@ public class DoubleConsonant : PowerUp
     //o power up será ativado se o jogador acertar o T e logo em seguida o R
     public override void Apply(PowerUpContext context)
     {
-      foreach(string word in context.Words)
-      {
-            foreach (char c in word)
+        char[] vogais = { 'a', 'e', 'i', 'o', 'u' };
+
+        foreach (string word in context.Words)
+        {
+            for (int i = 0; i < word.Length; i++)
             {
-                int index = word.IndexOf(c);
-                if (index > 0 && word[index - 1] == context.lastChar)
+                char c = word[i];
+                if (c == context.CurChar)
                 {
-                    context.PointsToSumAfterPowerUps += context.PointsToSumBeforePowerUps*2;
+                    bool lastCharIsVogal = vogais.Contains(context.LastChar);
+                    bool curCharIsVogal = vogais.Contains(c);
+
+                    if (!lastCharIsVogal && !curCharIsVogal)
+                    {
+                        if ((i > 0 && word[i - 1] == context.LastChar) ||
+                            (i < word.Length - 1 && word[i + 1] == context.LastChar))
+                        {
+                            Debug.Log(context.player.baseMultipl * 1.5);
+                            context.player.actualMuitpl += context.player.baseMultipl * 1.5;
+                        }
+                    }
                 }
-                else if (index < word.Length - 1 && word[index + 1] == context.lastChar)
-                {
-                    context.PointsToSumAfterPowerUps *= context.PointsToSumBeforePowerUps*2;
-                }  
-         }
-      }
-   }
+            }
+        }
+    }
 }
+

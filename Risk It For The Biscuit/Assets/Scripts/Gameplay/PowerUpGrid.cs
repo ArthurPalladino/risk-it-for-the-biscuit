@@ -17,6 +17,7 @@ public class PowerUpGrid : MonoBehaviour
     [SerializeField] Card powerUpCard;
     void Start()
     {
+        choosedPowerUps.OnClear += SetPowerUpsInGrid;
         nextPageButton.onClick.AddListener(() =>
         {
             curpage++;
@@ -43,11 +44,11 @@ public class PowerUpGrid : MonoBehaviour
                 int puIndex = i;
                 var powerUp = GameObject.Instantiate(powerUpPrefab, grid.transform);;
                 powerUp.GetComponent<Image>().sprite = puList[puIndex].icon;
-                powerUp.GetComponentInChildren<TextMeshProUGUI>().text = puList[puIndex].name;
+                powerUp.GetComponentInChildren<TextMeshProUGUI>().text = puList[puIndex].powerUpName;
 
                 
                 var button = powerUp.GetComponent<Button>();
-                
+                if (puList[puIndex].alreadyActivate) button.interactable = false;
                 button.onClick.AddListener(() =>
                     {
                         if (GameStateManager.instance.GetState() != GameState.Playing && GameStateManager.instance.GetState() != GameState.VisualizingPowerUps) return;
