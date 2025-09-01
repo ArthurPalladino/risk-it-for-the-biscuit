@@ -19,7 +19,7 @@ public struct WordArea
 public class HangmanManager : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI scoreText;
-    float pointsToWin = 100;
+    [SerializeField] public float pointsToWin = 0;
 
     public char lastChar;
     bool alreadyWon;
@@ -74,6 +74,7 @@ public class HangmanManager : MonoBehaviour
                 }
 
                 Difficulty += 1;
+                pointsToWin = Difficulty * 30;
                 player.restoreRound();
                 List<string> words = new List<string>();
                 int wordCount = (int)Math.Floor((double)Difficulty / 2);
@@ -97,6 +98,21 @@ public class HangmanManager : MonoBehaviour
     string GetWord()
     {
         var nl = WordList.FindAll(x => !PastWords.Contains(x));
+
+        var powerUps = SelectedPowerUpsManager.Instance.GetSelectedPowerUps();
+        var pu = powerUps.FirstOrDefault(p => !p.alreadyActivate && p.powerUpType == PowerUpType.WordBuyer);
+        if (pu != null)
+        {
+            if(pu.name == "Now I Kinda Like These Letters")
+            {
+                if(UnityEngine.Random.Range(0, 10) <= 2) //20%
+                {
+                    var nnl = nl.FindAll(x => x.Contains("x") || x.Contains("y") || x.Contains("w"));
+                    if (nl.Count > 0) nl = nnl;
+                }
+            }
+        }
+
         var word = nl[UnityEngine.Random.Range(0, nl.Count - 1)];
         PastWords.Add(word);
         Debug.Log(word);
@@ -105,7 +121,7 @@ public class HangmanManager : MonoBehaviour
 
     private void Awake()
     {
-
+        pointsToWin = Difficulty * 30;
         SendLetter.onClick.AddListener(SendLetterFunc);
         AddWord.onClick.AddListener(() =>
         {
@@ -157,6 +173,7 @@ public class HangmanManager : MonoBehaviour
         Words = new List<WordArea>();
 
         Difficulty = 1;
+        pointsToWin = Difficulty * 30;
         List<string> words = new List<string>() { GetWord() };
         player.RestoreGameplay();
         SetupRound(words);
@@ -310,8 +327,18 @@ public class HangmanManager : MonoBehaviour
     {
         if (CheckIfAllFound())
         {
-            AddWordFunc();
-            ResetBanco();
+            if (Words.Count <= 5)
+            {
+                AddWordFunc();
+                ResetBanco();
+            }
+            else
+            {
+                SelectedPowerUpsManager.Instance.ClearPowerUps();
+                player.RestoreGameplay();
+                AudioSource.PlayClipAtPoint(LostGameSound, Camera.main.transform.position, 0.3f);
+                finalScreen.ActivateFinalScreen("You Lose! Maximum Words Reached!");
+            }
         }
     }
     bool CheckIfAllFound()

@@ -6,7 +6,7 @@ using UnityEngine;
 public class DoubleVogals : PowerUp
 {
     //Quando acertar duas vogais seguidas ganha dobro de pontos, exemplo, palavra TROIA
-    //o power up será ativado se o jogador acertar o T e logo em seguida o R
+    //o power up será ativado se o jogador acertar o O e logo em seguida o I
     public override void Apply(PowerUpContext context)
     {
         char[] vogais = { 'a', 'e', 'i', 'o', 'u' };

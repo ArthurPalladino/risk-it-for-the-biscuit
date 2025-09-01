@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: IHateTheseLetters
   m_EditorClassIdentifier: 
   powerUpRarity: 60
-  powerUpType: 4
+  powerUpType: 0
   background: {r: 1, g: 1, b: 1, a: 1}
   powerUpName: I Hate These Letters
   description: ' Earn 1.3x more points if the word has XWY'

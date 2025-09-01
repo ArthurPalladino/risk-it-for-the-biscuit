@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdd65059a60d98b47977e87f8180cf27, type: 3}
-  m_Name: OhFinally
+  m_Script: {fileID: 11500000, guid: 40337a6ab2bf419418235d0fa34b5c61, type: 3}
+  m_Name: BrothersInArms
   m_EditorClassIdentifier: 
-  powerUpRarity: 60
-  powerUpType: 4
-  background: {r: 1, g: 1, b: 1, a: 1}
-  powerUpName: Now I Kinda Like These Letters
-  description: Increase the chance of having XYW in the next word by 20%
+  powerUpRarity: 40
+  powerUpType: 0
+  background: {r: 0, g: 0, b: 1, a: 1}
+  powerUpName: Brothers In Arms
+  description: 20% Chance of recovering one life when getting W, V or U correct
   duration: 0
   icon: {fileID: 3052218197092107100, guid: a349365d26df4bd45913bc63f708ad18, type: 3}
   maxUses: 0
