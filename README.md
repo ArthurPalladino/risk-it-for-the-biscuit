@@ -22,7 +22,7 @@ Nosso objetivo era criar um jogo divertido e desafiador, que unisse risco, estra
 
 🔗 Jogue Agora
 
-👉 Take a Risk or Get Cut Off no Itch.io
+👉 [Take a Risk or Get Cut Off no Itch.io](https://arthurpalladino.itch.io/take-a-risk-or-get-cut-off)
 
 👨‍💻 Equipe
 
